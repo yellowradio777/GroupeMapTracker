@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "480547200510",
+    "firebase_url": "https://groupmaptracker.firebaseio.com",
+    "project_id": "groupmaptracker",
+    "storage_bucket": "groupmaptracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480547200510:android:aed7fbb2a273e9338df4af",
+        "android_client_info": {
+          "package_name": "com.example.groupmaptracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480547200510-oagh2ctbpge0l8cu8sdqaf5pilj1pqrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.groupmaptracker",
+            "certificate_hash": "825944fbbea3d094edb1500201001fef8784d3dd"
+          }
+        },
+        {
+          "client_id": "480547200510-qvpf7q4arru4vs8pnhhrnuoes2tumoar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5hBNY604bKUMu-fXhhgYBJniimjatwpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480547200510-qvpf7q4arru4vs8pnhhrnuoes2tumoar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
