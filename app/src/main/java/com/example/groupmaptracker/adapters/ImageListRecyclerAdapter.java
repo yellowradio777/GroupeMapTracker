@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import groupmaptracker.R;
 
 import java.util.ArrayList;
 
+import groupmaptracker.R;
+
 public class ImageListRecyclerAdapter extends RecyclerView.Adapter<ImageListRecyclerAdapter.ViewHolder>{
 
-    private ArrayList<Integer> mImages = new ArrayList<>();
+    private ArrayList<Integer> mImages;
     private ImageListRecyclerClickListener mImageListRecyclerClickListener;
     private Context mContext;
 
@@ -31,8 +32,7 @@ public class ImageListRecyclerAdapter extends RecyclerView.Adapter<ImageListRecy
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image_list_item, parent, false);
-        final ViewHolder holder = new ViewHolder(view, mImageListRecyclerClickListener);
-        return holder;
+        return new ViewHolder(view, mImageListRecyclerClickListener);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ImageListRecyclerAdapter extends RecyclerView.Adapter<ImageListRecy
         Glide.with(mContext)
                 .setDefaultRequestOptions(requestOptions)
                 .load(mImages.get(position))
-                .into(((ViewHolder)holder).image);
+                .into((holder).image);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ImageListRecyclerAdapter extends RecyclerView.Adapter<ImageListRecy
         ImageView image;
         ImageListRecyclerClickListener mClickListener;
 
-        public ViewHolder(View itemView, ImageListRecyclerClickListener clickListener) {
+        ViewHolder(View itemView, ImageListRecyclerClickListener clickListener) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
             mClickListener = clickListener;

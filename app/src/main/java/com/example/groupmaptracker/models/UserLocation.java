@@ -10,6 +10,8 @@ import java.util.Date;
 
 public class UserLocation implements Parcelable {
 
+    private User user;
+    private GeoPoint geo_point;
     public static final Creator<UserLocation> CREATOR = new Creator<UserLocation>() {
         @Override
         public UserLocation createFromParcel(Parcel in) {
@@ -21,10 +23,6 @@ public class UserLocation implements Parcelable {
             return new UserLocation[size];
         }
     };
-    private User user;
-    private GeoPoint geo_point;
-    private @ServerTimestamp
-    Date timestamp;
 
     public UserLocation(User user, GeoPoint geo_point, Date timestamp) {
         this.user = user;
@@ -39,6 +37,9 @@ public class UserLocation implements Parcelable {
     protected UserLocation(Parcel in) {
         user = in.readParcelable(User.class.getClassLoader());
     }
+
+    private @ServerTimestamp
+    Date timestamp;
 
     public User getUser() {
         return user;

@@ -7,15 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import groupmaptracker.R;
 import com.example.groupmaptracker.adapters.ImageListRecyclerAdapter;
 
 import java.util.ArrayList;
+
+import groupmaptracker.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +31,7 @@ public class ImageListFragment extends Fragment implements ImageListRecyclerAdap
 
     //widgets
     private RecyclerView mRecyclerView;
-
+    private Context mContext;
 
     //vars
     private ArrayList<Integer> mImageResources = new ArrayList<>();
@@ -40,20 +42,21 @@ public class ImageListFragment extends Fragment implements ImageListRecyclerAdap
     }
 
 
-    public static ImageListFragment newInstance() {
+    static ImageListFragment newInstance() {
         return new ImageListFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_list, container, false);
-        mRecyclerView = view.findViewById(R.id.image_list_recyclerview);
+        mContext = getActivity();
+        View rootView = inflater.inflate(R.layout.fragment_image_list, container, false);
+        mRecyclerView = rootView.findViewById(R.id.image_list_recyclerview);
 
         getImageResouces();
         initRecyclerview();
 
-        return view;
+        return rootView;
     }
 
     private void getImageResouces(){
@@ -75,7 +78,7 @@ public class ImageListFragment extends Fragment implements ImageListRecyclerAdap
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mIProfile = (IProfile) getActivity();
     }
