@@ -17,7 +17,6 @@
     <string name="register">Register</string>
     <string name="sign_in">Sign In</string>
     <string name="password">Password</string>
-    <string name="tabian_consulting_logo">Tabian Consulting Logo</string>
     <string name="email_registration">Email Registration</string>
     <string name="email">Email</string>
     <string name="confirm_password">Confirm Password</string>
@@ -48,6 +47,7 @@
     <string name="action_leave_chatroom">Leave chatroom</string>
     <string name="action_chatroom_user_list">User list</string>
     <string name="action_profile">Profile</string>
+    <string name="title_activity_maps">Map</string>
 
 
 </resources>

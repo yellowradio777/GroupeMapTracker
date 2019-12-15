@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import groupmaptracker.R;
 import com.example.groupmaptracker.UserClient;
 import com.example.groupmaptracker.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +24,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+
+import java.util.Objects;
+
+import groupmaptracker.R;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -90,7 +93,6 @@ public class LoginActivity extends AppCompatActivity implements
 
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                            .setTimestampsInSnapshotsEnabled(true)
                             .build();
                     db.setFirestoreSettings(settings);
 
@@ -102,7 +104,7 @@ public class LoginActivity extends AppCompatActivity implements
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()){
                                 Log.d(TAG, "onComplete: successfully set the user client.");
-                                User user = task.getResult().toObject(User.class);
+                                User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
                                 ((UserClient)(getApplicationContext())).setUser(user);
                             }
                         }
