@@ -15,18 +15,19 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import groupmaptracker.R;
 import com.example.groupmaptracker.UserClient;
 import com.example.groupmaptracker.adapters.ChatMessageRecyclerAdapter;
 import com.example.groupmaptracker.models.ChatMessage;
 import com.example.groupmaptracker.models.Chatroom;
 import com.example.groupmaptracker.models.User;
+import com.example.groupmaptracker.models.UserLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -39,6 +40,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import groupmaptracker.R;
 
 public class ChatroomActivity extends AppCompatActivity implements
         View.OnClickListener
@@ -58,6 +61,7 @@ public class ChatroomActivity extends AppCompatActivity implements
     private ArrayList<ChatMessage> mMessages = new ArrayList<>();
     private Set<String> mMessageIds = new HashSet<>();
     private ArrayList<User> mUserList = new ArrayList<>();
+    private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
 
 
     @Override
@@ -76,6 +80,26 @@ public class ChatroomActivity extends AppCompatActivity implements
         getChatroomUsers();
     }
 
+    private void getUserLocation(User user) {
+        DocumentReference locationsRef = mDb
+                .collection(getString(R.string.collection_user_locations))
+                .document(user.getUser_id());
+
+        locationsRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    if (task.getResult().toObject(UserLocation.class) != null) {
+
+                        mUserLocations.add(task.getResult().toObject(UserLocation.class));
+                    }
+                }
+            }
+        });
+
+    }
+
     private void getChatMessages(){
 
         CollectionReference messagesRef = mDb
@@ -86,29 +110,29 @@ public class ChatroomActivity extends AppCompatActivity implements
         mChatMessageEventListener = messagesRef
                 .orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.e(TAG, "onEvent: Listen failed.", e);
-                    return;
-                }
-
-                if(queryDocumentSnapshots != null){
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-
-                        ChatMessage message = doc.toObject(ChatMessage.class);
-                        if(!mMessageIds.contains(message.getMessage_id())){
-                            mMessageIds.add(message.getMessage_id());
-                            mMessages.add(message);
-                            mChatMessageRecyclerView.smoothScrollToPosition(mMessages.size() - 1);
+                    @Override
+                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.e(TAG, "onEvent: Listen failed.", e);
+                            return;
                         }
 
-                    }
-                    mChatMessageRecyclerAdapter.notifyDataSetChanged();
+                        if (queryDocumentSnapshots != null) {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
 
-                }
-            }
-        });
+                                ChatMessage message = doc.toObject(ChatMessage.class);
+                                if (!mMessageIds.contains(message.getMessage_id())) {
+                                    mMessageIds.add(message.getMessage_id());
+                                    mMessages.add(message);
+                                    mChatMessageRecyclerView.smoothScrollToPosition(mMessages.size() - 1);
+                                }
+
+                            }
+                            mChatMessageRecyclerAdapter.notifyDataSetChanged();
+
+                        }
+                    }
+                });
     }
 
     private void getChatroomUsers(){
@@ -136,6 +160,7 @@ public class ChatroomActivity extends AppCompatActivity implements
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 User user = doc.toObject(User.class);
                                 mUserList.add(user);
+                                getUserLocation(user);
                             }
 
                             Log.d(TAG, "onEvent: user list size: " + mUserList.size());
@@ -160,7 +185,7 @@ public class ChatroomActivity extends AppCompatActivity implements
                         public void run() {
                             if(mMessages.size() > 0){
                                 mChatMessageRecyclerView.smoothScrollToPosition(
-                                        Objects.requireNonNull(mChatMessageRecyclerView.getAdapter()).getItemCount() - 1);
+                                        mChatMessageRecyclerView.getAdapter().getItemCount() - 1);
                             }
 
                         }
@@ -212,10 +237,11 @@ public class ChatroomActivity extends AppCompatActivity implements
 
     private void inflateUserListFragment(){
         hideSoftKeyboard();
-        
+
         UserListFragment fragment = UserListFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
+        bundle.putParcelableArrayList(getString(R.string.intent_user_locations), mUserLocations);
         fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -228,7 +254,6 @@ public class ChatroomActivity extends AppCompatActivity implements
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
-
 
     private void getIncomingIntent(){
         if(getIntent().hasExtra(getString(R.string.intent_chatroom))){
@@ -244,7 +269,7 @@ public class ChatroomActivity extends AppCompatActivity implements
                 .collection(getString(R.string.collection_chatrooms))
                 .document(mChatroom.getChatroom_id())
                 .collection(getString(R.string.collection_chatroom_user_list))
-                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+                .document(FirebaseAuth.getInstance().getUid());
 
         joinChatroomRef.delete();
     }
@@ -255,14 +280,14 @@ public class ChatroomActivity extends AppCompatActivity implements
                 .collection(getString(R.string.collection_chatrooms))
                 .document(mChatroom.getChatroom_id())
                 .collection(getString(R.string.collection_chatroom_user_list))
-                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+                .document(FirebaseAuth.getInstance().getUid());
 
         User user = ((UserClient)(getApplicationContext())).getUser();
         joinChatroomRef.set(user); // Don't care about listening for completion.
     }
 
     private void setChatroomName(){
-        Objects.requireNonNull(getSupportActionBar()).setTitle(mChatroom.getTitle());
+        getSupportActionBar().setTitle(mChatroom.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -322,8 +347,10 @@ public class ChatroomActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.checkmark) {
-            insertNewMessage();
+        switch (v.getId()) {
+            case R.id.checkmark: {
+                insertNewMessage();
+            }
         }
     }
 

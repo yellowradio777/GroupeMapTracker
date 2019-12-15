@@ -25,8 +25,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
-import java.util.Objects;
-
 import groupmaptracker.R;
 
 import static android.text.TextUtils.isEmpty;
@@ -93,6 +91,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                            .setTimestampsInSnapshotsEnabled(true)
                             .build();
                     db.setFirestoreSettings(settings);
 
@@ -104,7 +103,7 @@ public class LoginActivity extends AppCompatActivity implements
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()){
                                 Log.d(TAG, "onComplete: successfully set the user client.");
-                                User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
+                                User user = task.getResult().toObject(User.class);
                                 ((UserClient)(getApplicationContext())).setUser(user);
                             }
                         }
@@ -177,8 +176,8 @@ public class LoginActivity extends AppCompatActivity implements
             }
 
             case R.id.email_sign_in_button:{
-               signIn();
-               break;
+                signIn();
+                break;
             }
         }
     }

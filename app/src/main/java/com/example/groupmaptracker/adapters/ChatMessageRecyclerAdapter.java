@@ -9,11 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.groupmaptracker.models.ChatMessage;
 import com.example.groupmaptracker.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import groupmaptracker.R;
 
@@ -43,15 +45,15 @@ public class ChatMessageRecyclerAdapter extends RecyclerView.Adapter<ChatMessage
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
 
-        if(FirebaseAuth.getInstance().getUid().equals(mMessages.get(position).getUser().getUser_id())){
-            ((ViewHolder)holder).username.setTextColor(ContextCompat.getColor(mContext, R.color.green1));
+        if (Objects.equals(FirebaseAuth.getInstance().getUid(), mMessages.get(position).getUser().getUser_id())) {
+            holder.username.setTextColor(ContextCompat.getColor(mContext, R.color.green1));
         }
         else{
-            ((ViewHolder)holder).username.setTextColor(ContextCompat.getColor(mContext, R.color.blue2));
+            holder.username.setTextColor(ContextCompat.getColor(mContext, R.color.blue2));
         }
 
-        ((ViewHolder)holder).username.setText(mMessages.get(position).getUser().getUsername());
-        ((ViewHolder)holder).message.setText(mMessages.get(position).getMessage());
+        holder.username.setText(mMessages.get(position).getUser().getUsername());
+        holder.message.setText(mMessages.get(position).getMessage());
     }
 
 

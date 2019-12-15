@@ -10,13 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import groupmaptracker.R;
 import com.example.groupmaptracker.UserClient;
 import com.example.groupmaptracker.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import groupmaptracker.R;
 
 
 public class ProfileActivity extends AppCompatActivity implements

@@ -61,7 +61,7 @@ public class User implements Parcelable{
     }
 
     public String getUser_id() {
-        return user_id;
+        return this.user_id;
     }
 
     public void setUser_id(String user_id) {
