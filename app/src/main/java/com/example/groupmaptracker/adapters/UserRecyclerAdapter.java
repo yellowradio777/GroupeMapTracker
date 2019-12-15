@@ -8,18 +8,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import groupmaptracker.R;
 import com.example.groupmaptracker.models.User;
 
 import java.util.ArrayList;
 
-public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder>{
+import groupmaptracker.R;
 
-    private ArrayList<User> mUsers = new ArrayList<>();
+public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder> {
 
+    private ArrayList<User> mUsers;
+    private UserListRecyclerClickListener mClickListener;
 
-    public UserRecyclerAdapter(ArrayList<User> users) {
+    public UserRecyclerAdapter(ArrayList<User> users, UserListRecyclerClickListener mClickListener) {
         this.mUsers = users;
+        this.mClickListener = mClickListener;
     }
 
 
@@ -27,15 +29,14 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_user_list_item, parent, false);
-        final ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view, mClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        ((ViewHolder)holder).username.setText(mUsers.get(position).getUsername());
-        ((ViewHolder)holder).email.setText(mUsers.get(position).getEmail());
+        holder.username.setText(mUsers.get(position).getUsername());
+        holder.email.setText(mUsers.get(position).getEmail());
     }
 
     @Override
@@ -43,19 +44,30 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
         return mUsers.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
-        TextView username, email;
+    public interface UserListRecyclerClickListener {
+        void onUserClicked(int position);
+    }
 
-        public ViewHolder(View itemView) {
+    class ViewHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener {
+        TextView username, email;
+        UserListRecyclerClickListener mClickListener;
+
+        ViewHolder(View itemView, UserListRecyclerClickListener clickListener) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
             email = itemView.findViewById(R.id.email);
+
+            mClickListener = clickListener;
+
+            itemView.setOnClickListener(this);
         }
 
-
+        @Override
+        public void onClick(View v) {
+            mClickListener.onUserClicked(getAdapterPosition());
+        }
     }
-
 }
 
 

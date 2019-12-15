@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.example.groupmaptracker.models.ClusterMarker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -32,6 +33,18 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
         final int padding = (int) context.getResources().getDimension(R.dimen.custom_marker_padding);
         imageView.setPadding(padding, padding, padding, padding);
         iconGenerator.setContentView(imageView);
+    }
+
+    /**
+     * Update the GPS coordinate of a ClusterItem
+     *
+     * @param clusterMarker
+     */
+    public void setUpdateMarker(ClusterMarker clusterMarker) {
+        Marker marker = getMarker(clusterMarker);
+        if (marker != null) {
+            marker.setPosition(clusterMarker.getPosition());
+        }
     }
 
     @Override

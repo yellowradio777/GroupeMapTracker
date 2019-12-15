@@ -15,8 +15,6 @@ import com.example.groupmaptracker.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Objects;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import groupmaptracker.R;
 
@@ -118,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity implements
 
         FirebaseFirestore.getInstance()
                 .collection(getString(R.string.collection_users))
-                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
+                .document((FirebaseAuth.getInstance().getUid()))
                 .set(user);
     }
 

@@ -1,6 +1,7 @@
 package com.example.groupmaptracker.ui;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -31,6 +32,7 @@ import com.example.groupmaptracker.adapters.ChatroomRecyclerAdapter;
 import com.example.groupmaptracker.models.Chatroom;
 import com.example.groupmaptracker.models.User;
 import com.example.groupmaptracker.models.UserLocation;
+import com.example.groupmaptracker.services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -101,6 +103,31 @@ public class MainActivity extends AppCompatActivity implements
         initChatroomRecyclerView();
     }
 
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
+            Intent serviceIntent = new Intent(this, LocationService.class);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                MainActivity.this.startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        }
+    }
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
+    }
+
 
     private void getUserDetails() {
         if (mUserLocation == null) {
@@ -141,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements
                     mUserLocation.setGeo_point(geoPoint);
                     mUserLocation.setTimestamp(null);
                     saveUserLocation();
+                    startLocationService();
                 }
             }
         });
@@ -332,11 +360,6 @@ public class MainActivity extends AppCompatActivity implements
 
         final Chatroom chatroom = new Chatroom();
         chatroom.setTitle(chatroomName);
-
-//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-//                .setTimestampsInSnapshotsEnabled(true)
-//                .build();
-//        mDb.setFirestoreSettings(settings);
 
         DocumentReference newChatroomRef = mDb
                 .collection(getString(R.string.collection_chatrooms))

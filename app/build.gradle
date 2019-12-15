@@ -57,5 +57,9 @@ dependencies {
     implementation 'org.jetbrains:annotations-java5:15.0'
     // Google Maps util (Markers etc.)
     implementation 'com.google.maps.android:android-maps-utils:0.5'
+
+    // Google Directions
+    implementation 'com.google.maps:google-maps-services:0.10.2'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
 }
 apply plugin: 'com.google.gms.google-services'

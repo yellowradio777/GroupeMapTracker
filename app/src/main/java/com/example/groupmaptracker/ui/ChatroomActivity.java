@@ -38,7 +38,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import groupmaptracker.R;
@@ -90,7 +89,7 @@ public class ChatroomActivity extends AppCompatActivity implements
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                 if (task.isSuccessful()) {
-                    if (Objects.requireNonNull(task.getResult()).toObject(UserLocation.class) != null) {
+                    if ((task.getResult()).toObject(UserLocation.class) != null) {
 
                         mUserLocations.add(task.getResult().toObject(UserLocation.class));
                     }
@@ -185,7 +184,7 @@ public class ChatroomActivity extends AppCompatActivity implements
                         public void run() {
                             if(mMessages.size() > 0){
                                 mChatMessageRecyclerView.smoothScrollToPosition(
-                                        Objects.requireNonNull(mChatMessageRecyclerView.getAdapter()).getItemCount() - 1);
+                                        (mChatMessageRecyclerView.getAdapter()).getItemCount() - 1);
                             }
 
                         }
@@ -201,7 +200,7 @@ public class ChatroomActivity extends AppCompatActivity implements
         String message = mMessage.getText().toString();
 
         if(!message.equals("")){
-            message = message.replaceAll(Objects.requireNonNull(System.getProperty("line.separator")), "");
+            message = message.replaceAll((System.getProperty("line.separator")), "");
 
             DocumentReference newMessageDoc = mDb
                     .collection(getString(R.string.collection_chatrooms))
@@ -270,7 +269,7 @@ public class ChatroomActivity extends AppCompatActivity implements
                 .collection(getString(R.string.collection_chatrooms))
                 .document(mChatroom.getChatroom_id())
                 .collection(getString(R.string.collection_chatroom_user_list))
-                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+                .document((FirebaseAuth.getInstance().getUid()));
 
         joinChatroomRef.delete();
     }
@@ -281,14 +280,14 @@ public class ChatroomActivity extends AppCompatActivity implements
                 .collection(getString(R.string.collection_chatrooms))
                 .document(mChatroom.getChatroom_id())
                 .collection(getString(R.string.collection_chatroom_user_list))
-                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+                .document((FirebaseAuth.getInstance().getUid()));
 
         User user = ((UserClient)(getApplicationContext())).getUser();
         joinChatroomRef.set(user); // Don't care about listening for completion.
     }
 
     private void setChatroomName(){
-        Objects.requireNonNull(getSupportActionBar()).setTitle(mChatroom.getTitle());
+        (getSupportActionBar()).setTitle(mChatroom.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
