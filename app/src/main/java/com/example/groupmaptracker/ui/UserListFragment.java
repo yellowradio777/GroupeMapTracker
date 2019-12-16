@@ -2,9 +2,6 @@ package com.example.groupmaptracker.ui;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -567,7 +563,7 @@ public class UserListFragment extends Fragment implements
 
     @Override
     public void onInfoWindowClick(final Marker marker) {
-        if (marker.getTitle().contains("Trip #")) {
+        /*if (marker.getTitle().contains("Trip #")) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("Open Google Maps?")
                     .setCancelable(true)
@@ -597,7 +593,7 @@ public class UserListFragment extends Fragment implements
                     });
             final AlertDialog alert = builder.create();
             alert.show();
-        } else {
+        } else {*/
             if (marker.getSnippet().equals("This is you")) {
                 marker.hideInfoWindow();
             } else {
@@ -605,24 +601,17 @@ public class UserListFragment extends Fragment implements
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(marker.getSnippet())
                         .setCancelable(true)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                resetSelectedMarker();
-                                mSelectedMarker = marker;
-                                calculateDirections(marker);
-                                dialog.dismiss();
-                            }
+                        .setPositiveButton("Yes", (dialog, id) -> {
+                            resetSelectedMarker();
+                            mSelectedMarker = marker;
+                            calculateDirections(marker);
+                            dialog.dismiss();
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                            }
-                        });
+                        .setNegativeButton("No", (dialog, id) -> dialog.cancel());
                 final AlertDialog alert = builder.create();
                 alert.show();
             }
         }
-    }
 
 
     @Override

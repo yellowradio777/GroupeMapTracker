@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity implements
                             user.setEmail(email);
                             user.setUsername(email.substring(0, email.indexOf("@")));
                             user.setUser_id(FirebaseAuth.getInstance().getUid());
-                            user.setAvatar(String.valueOf(R.drawable.cwm_logo));
+                            user.setAvatar(String.valueOf(R.drawable.chef));
 
                             FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                                     .setTimestampsInSnapshotsEnabled(true)
